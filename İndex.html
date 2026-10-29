@@ -1,0 +1,421 @@
+file:///data/user/0/com.foxdebug.acodefree/files/public/İndex.html<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiraaam 🤍 - Sonsuzluk Dünyamız</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        
+        body {
+            background: linear-gradient(-45deg, #ff4081, #ff80ab, #7c4dff, #ff1744);
+            background-size: 400% 400%;
+            animation: gradientBG 8s ease infinite;
+            margin: 0; padding: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; color: #4a4a4a; overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .heart {
+            position: fixed; color: rgba(255, 255, 255, 0.7);
+            font-size: 22px; animation: floatUp 4s linear infinite;
+            bottom: -20px; z-index: 0; pointer-events: none;
+            text-shadow: 0 0 8px rgba(255,255,255,0.8);
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.93);
+            backdrop-filter: blur(10px);
+            padding: 20px; border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%; max-width: 400px; margin-bottom: 20px;
+            text-align: center; position: relative; z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        h1, h2, h3 { color: #d81b60; margin-top: 0; margin-bottom: 10px; }
+        .hint { color: #ad1457; font-weight: bold; font-size: 15px; margin-bottom: 15px; }
+        input[type="password"], textarea, input[type="text"] {
+            width: 90%; padding: 12px; font-size: 16px; border-radius: 12px;
+            border: 2px solid #ff80ab; text-align: center; outline: none; margin-bottom: 12px;
+        }
+        textarea { height: 80px; resize: none; text-align: left; }
+        button {
+            background: linear-gradient(45deg, #ff1744, #ff4081);
+            color: white; border: none; padding: 12px 18px;
+            font-size: 15px; border-radius: 14px; cursor: pointer; width: 100%;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4); transition: 0.2s; font-weight: bold;
+        }
+        button:active { transform: scale(0.95); }
+        .timer { font-size: 18px; font-weight: bold; color: #ad1457; margin-top: 8px; line-height: 1.4; }
+        .hidden { display: none; }
+        .option-btn { background-color: #f8bbd0; color: #880e4f; margin: 6px 0; font-size: 14px; }
+        .mood-btn { background: linear-gradient(45deg, #f48fb1, #ff4081); color: white; margin: 4px; width: 47%; display: inline-block; border-radius: 10px; }
+        .dictionary-box { background: #fce4ec; padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 14px; color: #880e4f; }
+    </style>
+</head>
+<body>
+
+    <div id="heartContainer"></div>
+
+    <!-- 1. BÖLÜM: ŞİFRE EKRANI -->
+    <div id="passScreen" class="card" style="margin-top: 25vh;">
+        <h1>Giriş Kilitli 🔒</h1>
+        <p class="hint">İpucu: en sevdiğin erkek</p>
+        <input type="password" id="passInput" placeholder="Şifreyi yaz..." autofocus>
+        <button onclick="checkPass()">Kilidi Aç ✨</button>
+        <p id="passErr" style="color: #d50000; display: none; margin-top: 10px; font-weight: bold;">Hatalı şifre, bir daha düşün 😉</p>
+    </div>
+
+    <!-- 2. BÖLÜM: ANA SİTE -->
+    <div id="mainContent" class="hidden">
+        
+        <audio id="bgMusic" loop src="muzik.mp3"></audio>
+
+        <!-- KART 1: ANA BAŞLIK -->
+        <div class="card">
+            <h1>Hiraaam 🤍</h1>
+            <p>Seninle her anımız ilk günkü gibi özel ve eşsiz...</p>
+        </div>
+
+        <!-- KART 2: SAYAÇ -->
+        <div class="card">
+            <h2>⏳ Bizim Hikayemiz</h2>
+            <p>2 Ekim 2026'dan beri Birlikteyiz:</p>
+            <div id="timer" class="timer">Hesaplanıyor...</div>
+            <p id="subStats" style="font-size: 12px; color: #ad1457; margin-top: 10px; line-height: 1.5;"></p>
+        </div>
+
+        <!-- KART 3: GÜNLÜK RUH HALİ -->
+        <div class="card">
+            <h2>💭 Bugün Nasıl Hissediyorsun?</h2>
+            <p>Hissine bas, sana özel mesajını oku:</p>
+            <div>
+                <button class="mood-btn" onclick="setMood('ozledim')">Seni Özledim 🥺</button>
+                <button class="mood-btn" onclick="setMood('uzgun')">Biraz Üzgünüm 😔</button>
+                <button class="mood-btn" onclick="setMood('mutlu')">Çok Mutluyum 😊</button>
+                <button class="mood-btn" onclick="setMood('yorgun')">Çok Yorgunum 😴</button>
+            </div>
+            <p id="moodResult" style="font-weight:bold; color:#ad1457; margin-top:12px;"></p>
+        </div>
+
+        <!-- KART 4: İLTİFAT KUTUSU -->
+        <div class="card">
+            <h2>💖 İltifat Kutusu</h2>
+            <button onclick="iltifatGetir()">✨ Bir Söz Kap</button>
+            <p id="iltifatAlani" style="margin-top:15px; font-weight:bold; color:#ad1457;"></p>
+        </div>
+
+        <!-- KART 5: SÜRPRİZ SÖZLER -->
+        <div class="card">
+            <h2>💌 Aklından Hiç Çıkmasın</h2>
+            <button onclick="sozGetir()" style="background: linear-gradient(45deg, #c2185b, #e91e63);">✨ Bana Sürpriz Bir Şey Söyle</button>
+            <p id="sozAlani" style="margin-top:15px; font-weight:bold; color:#ad1457; font-size: 15px;"></p>
+        </div>
+
+        <!-- KART 6: AŞK SÖZLÜĞÜ -->
+        <div class="card">
+            <h2>📖 Bizim Sözlüğümüz</h2>
+            <p>Aramızdaki özel kelimelerin anlamları:</p>
+            <button onclick="sozlukGetir()" style="background: linear-gradient(45deg, #00acc1, #00838f);">Rastgele Terim Seç 🔍</button>
+            <div id="sozlukAlani" class="dictionary-box" style="display: none;"></div>
+        </div>
+
+        <!-- KART 7: AŞK BAROMETRESİ -->
+        <div class="card">
+            <h2>⚡ Aşk Barometresi</h2>
+            <p>Samet & Hiraaam Uyum Testi:</p>
+            <button onclick="hesaplaUyum()" style="background: linear-gradient(45deg, #7c4dff, #b388ff);">Testi Başlat 📊</button>
+            <p id="uyumSonuc" style="margin-top:15px; font-weight:bold; color:#7c4dff; font-size: 16px;"></p>
+        </div>
+
+        <!-- KART 8: ZAMAN KAPSÜLÜ -->
+        <div class="card">
+            <h2>🕰️ Zaman Kapsülü</h2>
+            <p>İleride açıp okumalık hatıra:</p>
+            <p style="font-size: 13px; font-style: italic; color: #880e4f;">"Bu siteyi açtığımızda saatler 23:43'ü gösteriyordu ve aramızdaki bağ her geçen saniye daha da devasa bir hal alıyordu..."</p>
+        </div>
+
+        <!-- KART 9: DİLEK BALONU -->
+        <div class="card">
+            <h2>🎈 Gökyüzüne Dilek Uçur</h2>
+            <p>Bir dilek tut ve butona bas:</p>
+            <button onclick="dilekUcur()" style="background: linear-gradient(45deg, #ff9100, #ff6d00);">Dileğimi Uçur 🌠</button>
+            <p id="dilekSonuc" style="margin-top:10px; font-weight:bold; color:#ff6d00;"></p>
+        </div>
+
+        <!-- KART 10: SEVGİ PATLAMASI -->
+        <div class="card">
+            <h2>🎉 Sevgi Patlaması</h2>
+            <p>Butona bas ve ekrana kalpler yağsın:</p>
+            <button onclick="kalpYagmuruBaslat()" style="background: linear-gradient(45deg, #00e676, #00c853);">Kalp Yagmuru Başlat 💖</button>
+        </div>
+
+        <!-- KART 11: MİNİ OYUN -->
+        <div class="card">
+            <h2>🎮 Bizi Ne Kadar Tanıyorsun?</h2>
+            <p id="gameQuestion">Soru 1: Ben en çok ne zaman mutlu oluyorum?</p>
+            <div id="gameOptions">
+                <button class="option-btn" onclick="answer(1, true)">Seninle vakit geçirip sohbet ederken 🤍</button>
+                <button class="option-btn" onclick="answer(1, false)">Uykum gelip yatağa yatınca :d</button>
+            </div>
+            <p id="gameResult" style="font-weight:bold; color:#d81b60; margin-top:10px;"></p>
+        </div>
+
+        <!-- KART 12: BULUT NOT BIRAKMA -->
+        <div class="card">
+            <h2>📥 Bana Bir Not Bırak</h2>
+            <p>Aklına geleni yaz, bana ulaşsın:</p>
+            <textarea id="noteInput" placeholder="Mesajını buraya yaz sevgilim..."></textarea>
+            <button onclick="saveNoteToCloud()">Bana Gönder ✨</button>
+            <p id="noteStatus" style="font-weight:bold; color:#2e7d32; margin-top:10px;"></p>
+            
+            <div id="savedNoteDisplay" style="margin-top: 15px; padding: 10px; background: #fce4ec; border-radius: 12px; display: none;">
+                <p style="font-size: 12px; color: #880e4f; margin: 0 0 5px 0; font-weight: bold;">Son Gönderilen Not:</p>
+                <p id="savedNoteText" style="font-size: 14px; color: #d81b60; margin: 0; font-style: italic;"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const API_KEY = "$2a$10$pMoqO4udwAwAT0YM3EN4CuWEt7ufBGPytUyv9sOHBRfwSr2apPeDi";
+        let BIN_ID = localStorage.getItem("hiraBinId") || "";
+
+        window.onload = function() {
+            if (BIN_ID) loadCloudNote();
+        };
+
+        function loadCloudNote() {
+            fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                method: "GET",
+                headers: { "X-Master-Key": API_KEY }
+            })
+            .then(res => res.json())
+            .then(data => {
+                let noteContent = data.record?.note || data.record;
+                if (noteContent) {
+                    document.getElementById("savedNoteText").innerText = "\"" + noteContent + "\"";
+                    document.getElementById("savedNoteDisplay").style.display = "block";
+                }
+            })
+            .catch(err => console.log("Not çekilemedi"));
+        }
+
+        function saveNoteToCloud() {
+            const txt = document.getElementById("noteInput").value.trim();
+            if(!txt) return;
+
+            document.getElementById("noteStatus").innerText = "Mektubun uçuyor... ✈️";
+
+            if (!BIN_ID) {
+                fetch("https://api.jsonbin.io/v3/b", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": API_KEY,
+                        "X-Bin-Name": "HiraNotlar"
+                    },
+                    body: JSON.stringify({ note: txt })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    BIN_ID = data.metadata.id;
+                    localStorage.setItem("hiraBinId", BIN_ID);
+                    document.getElementById("noteStatus").innerText = "Notun bana ulaştı sevgilim! 🤍";
+                    document.getElementById("savedNoteText").innerText = "\"" + txt + "\"";
+                    document.getElementById("savedNoteDisplay").style.display = "block";
+                })
+                .catch(err => {
+                    document.getElementById("noteStatus").innerText = "Hata oluştu kanka!";
+                });
+            } else {
+                fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": API_KEY
+                    },
+                    body: JSON.stringify({ note: txt })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("noteStatus").innerText = "Notun bana ulaştı sevgilim! 🤍";
+                    document.getElementById("savedNoteText").innerText = "\"" + txt + "\"";
+                    document.getElementById("savedNoteDisplay").style.display = "block";
+                })
+                .catch(err => {
+                    document.getElementById("noteStatus").innerText = "Hata oluştu kanka!";
+                });
+            }
+        }
+
+        function checkPass() {
+            var val = document.getElementById("passInput").value.trim().toLowerCase();
+            if (val === "samet") {
+                document.getElementById("passScreen").classList.add("hidden");
+                document.getElementById("mainContent").classList.remove("hidden");
+                
+                var music = document.getElementById("bgMusic");
+                music.play().catch(e => console.log("Müzik oynatılamadı"));
+                
+                startTimer();
+                createHearts();
+            } else {
+                document.getElementById("passErr").style.display = "block";
+            }
+        }
+
+        function createHearts() {
+            const icons = ["🤍", "✨", "💖", "🌸", "🎈"];
+            setInterval(() => {
+                const heart = document.createElement("div");
+                heart.classList.add("heart");
+                heart.innerText = icons[Math.floor(Math.random() * icons.length)];
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+                document.getElementById("heartContainer").appendChild(heart);
+                setTimeout(() => heart.remove(), 4000);
+            }, 500);
+        }
+
+        const sozlukMaddeleri = [
+            "<b>Hiraaam:</b> Dünyanın en tatlı, en güzel ve en çok sevilen sevgilisi.",
+            "<b>Samet:</b> Dünyanın en şanslı ve Hiraaam'a aşık adamı.",
+            "<b>23:43:</b> Her şeyin başladığı o efsanevi zaman dilimi.",
+            "<b>Sonsuzluk:</b> Seninle geçireceğimiz her anın toplamı."
+        ];
+
+        function sozlukGetir() {
+            const r = sozlukMaddeleri[Math.floor(Math.random() * sozlukMaddeleri.length)];
+            const box = document.getElementById("sozlukAlani");
+            box.innerHTML = r;
+            box.style.display = "block";
+        }
+
+        function dilekUcur() {
+            document.getElementById("dilekSonuc").innerText = "🎈 Dileğin gökyüzüne uçuruldu! Yakında gerçekleşecek ✨";
+            kalpYagmuruBaslat();
+        }
+
+        function kalpYagmuruBaslat() {
+            for(let i=0; i<35; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement("div");
+                    heart.classList.add("heart");
+                    heart.innerText = "💖";
+                    heart.style.left = Math.random() * 100 + "vw";
+                    heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+                    heart.style.animationDuration = (Math.random() * 1 + 2) + "s";
+                    document.getElementById("heartContainer").appendChild(heart);
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 100);
+            }
+        }
+
+        function hesaplaUyum() {
+            document.getElementById("uyumSonuc").innerText = "✨ Hesaplandı: %100 Uyum! Ruh ikizisiniz! 🤍";
+        }
+
+        function startTimer() {
+            const startDate = new Date(2026, 9, 2, 23, 43, 0);
+            setInterval(() => {
+                const now = new Date();
+                const diff = now - startDate;
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / 1000 / 60) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                document.getElementById("timer").innerHTML = 
+                    `${days} Gün<br>${hours} Saat, ${minutes} Dakika, ${seconds} Saniye`;
+
+                const totalMinutes = Math.floor(diff / (1000 * 60));
+                const totalHours = Math.floor(diff / (1000 * 60 * 60));
+                
+                const heartBeats = (totalHours * 4200).toLocaleString("tr-TR");
+                const breaths = (totalMinutes * 16).toLocaleString("tr-TR");
+
+                document.getElementById("subStats").innerHTML = 
+                    `Seninle birlikte yaklaşık <b>${breaths}</b> kez nefes aldık 🫁✨<br>` +
+                    `Kalbim senin için yaklaşık <b>${heartBeats}</b> kez attı 💖`;
+            }, 1000);
+        }
+
+        function setMood(mood) {
+            const res = document.getElementById("moodResult");
+            if(mood === 'ozledim') res.innerText = "Ben de seni çok özledim sevgilim, hemen yaz bana! 🤍";
+            if(mood === 'uzgun') res.innerText = "Sakın üzülme, ben her zaman yanındayım. Gel sarılayım sana 🫂";
+            if(mood === 'mutlu') res.innerText = "Sen mutlu olunca benim de içim ışıl ışıl oluyor! ✨";
+            if(mood === 'yorgun') res.innerText = "Dinlen güzelim, yorma kendini. Aklım sende... 🛌";
+        }
+
+        const iltifatlar = [
+            "Şöyle bi' dalıp sana bakıyorum da, dünyanın en güzel detayı falan olabilirsin ya. 🤍",
+            "Ya sen her gün nasıl daha da güzelleşebiliyorsun? Hani bunun bir hilesi varsa söyle :d",
+            "Lan her seferinde daha da çok nasıl sevebiliyorum seni, hayret ediyorum valla.",
+            "Gülüşün aklıma gelince istemsiz sırıtmaya başlıyorum, bağımlılık yaptın resmen.",
+            "Dünyadaki bütün güzel kelimeleri toplasam yine de seni anlatmaya yetmez."
+        ];
+
+        function iltifatGetir() {
+            const r = iltifatlar[Math.floor(Math.random() * iltifatlar.length)];
+            document.getElementById("iltifatAlani").innerText = r;
+        }
+
+        const surprizSozler = [
+            "İyi ki karşılaştık, iyi ki benim oldun Hiraaam. 🤍",
+            "Seninle geçen her saniye, ömrümün en güzel dönemi.",
+            "Dünya yıkılsa ortada sadece senin gülüşün kalır, o kadar eminim.",
+            "Benim bu hayattaki en büyük şansım sensin, unutma sakın."
+        ];
+
+        function sozGetir() {
+            const s = surprizSozler[Math.floor(Math.random() * surprizSozler.length)];
+            document.getElementById("sozAlani").innerText = s;
+        }
+
+        function answer(currentStep, isCorrect) {
+            const q = document.getElementById("gameQuestion");
+            const opt = document.getElementById("gameOptions");
+            const res = document.getElementById("gameResult");
+
+            if(currentStep === 1) {
+                if(isCorrect) {
+                    q.innerText = "Soru 2: Benim için en değerli yer neresidir?";
+                    opt.innerHTML = `
+                        <button class="option-btn" onclick="answer(2, true)">Senin yanın 🤍</button>
+                        <button class="option-btn" onclick="answer(2, false)">Evdeki koltuk :d</button>
+                    `;
+                    res.innerText = "Doğru! Devam et 😉";
+                } else { res.innerText = "Bilemedin, tekrar dene!"; }
+            } else if(currentStep === 2) {
+                if(isCorrect) {
+                    q.innerText = "Soru 3: Sana baktığımda aklımdan ne geçiyor?";
+                    opt.innerHTML = `
+                        <button class="option-btn" onclick="answer(3, true)">'İyi ki hayatımdasın' diyorum 💖</button>
+                        <button class="option-btn" onclick="answer(3, false)">'Ne yesek acaba' diye düşünüyorum :d</button>
+                    `;
+                    res.innerText = "Harikasın! Son soruya geçtik 🚀";
+                } else { res.innerText = "Yanlış cevap kanka!"; }
+            } else if(currentStep === 3) {
+                if(isCorrect) {
+                    q.innerText = "🎉 TEBRİKLER! TESTİ TAMAMLADIN!";
+                    opt.innerHTML = "";
+                    res.innerText = "Sen benim bu hayattaki en büyük şansımsın Hiraaam, seni çok seviyorum! 🤍";
+                } else { res.innerText = "Son soruda elendin, tekrar dene!"; }
+            }
+        }
+    </script>
